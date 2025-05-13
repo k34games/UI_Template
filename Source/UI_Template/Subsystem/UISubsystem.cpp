@@ -2,12 +2,19 @@
 
 
 #include "UISubsystem.h"
-void UUISubsystem::Initialize(FSubsystemCollectionBase& Collection)
-{
-	Super::Initialize(Collection);
+//void UUISubsystem::Initialize(FSubsystemCollectionBase& Collection)
+//{
+//	Super::Initialize(Collection);
 	//FSlateBrush _brush;
 	//_brush.
-	FStarshipCoreStyle::SetFocusBrush(&OverridenFocusBrush);
+	//FStarshipCoreStyle::SetFocusBrush(&OverridenFocusBrush);
 	//a regarder pour le coup
 	//FStarshipCoreStyle::SetPressedSelectionColor(FLinearColor::Red);
+//}
+
+void UUISubsystem::SetFocusBrush(FSlateBrush _brush)
+{
+
+	OverridenFocusBrush = _brush;
+	FStarshipCoreStyle::SetFocusBrush(&OverridenFocusBrush);
 }

@@ -8,6 +8,7 @@
 #include "UISubsystem.generated.h"
 
 //FSlateBrush OverridenFocusBrush;
+//static FSlateBrush OverridenFocusBrush;
 
 /**
  * 
@@ -19,9 +20,16 @@ class UI_TEMPLATE_API UUISubsystem : public UGameInstanceSubsystem
 
 protected:
 
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	//virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FSlateBrush OverridenFocusBrush;
+	UFUNCTION(BlueprintCallable) void SetFocusBrush(FSlateBrush _brush);
+
+	UFUNCTION(BlueprintCallable) void SetFocusBrushTutorial(FSlateBrush InBrush)
+	{
+		OverridenFocusBrush = InBrush;
+		FStarshipCoreStyle::SetFocusBrush(&OverridenFocusBrush);
+	}
 
 };
