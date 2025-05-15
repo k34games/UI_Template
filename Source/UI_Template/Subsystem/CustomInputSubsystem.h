@@ -5,8 +5,14 @@
 #include "CoreMinimal.h"
 #include "Subsystems/LocalPlayerSubsystem.h"
 #include "Templates/SharedPointer.h"
-
+#include "../InputInterpretor/CustomEventContainer.h"
 #include "CustomInputSubsystem.generated.h"
+
+
+
+
+
+
 
 UENUM()
 enum ECustomInputType
@@ -15,6 +21,8 @@ enum ECustomInputType
 	Gamepad,
 	Touch
 };
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInputTypeChanged, ECustomInputType, newInput);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMousePressed, FPointerEvent, _mouseEvent);
 
 /**
  * 
@@ -26,21 +34,23 @@ UCLASS()
 class UI_TEMPLATE_API UCustomInputSubsystem : public ULocalPlayerSubsystem
 {
 	GENERATED_BODY()
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInputTypeChanged, ECustomInputType, newInput);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnKeyPressed, FKey, _onKeyPressed);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMousePressed, FPointerEvent, _mouseEvent);
+
 	UPROPERTY(BlueprintAssignable, meta = (AllowPrivateAccess))	FOnInputTypeChanged onInputTypeChanged;
 	 TSharedPtr<CustomInputInterpretor> interpretor;
 	 UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess))	TEnumAsByte<ECustomInputType> currentInputType;
 
 
 public:
-	 UPROPERTY() TMap<FKey, FOnKeyPressed> keyDownBindings;
-	 UPROPERTY() TMap<FKey, FOnKeyPressed> keyUpBindings;
-	 UPROPERTY() TArray<FOnMousePressed> mouseDownBindings;
-	 UPROPERTY() TArray<FOnMousePressed> mouseUpBindings;
-	 UPROPERTY() TArray<FOnMousePressed> mouseDoubleClickBindings;
+	//UPROPERTY(BlueprintReadWrite) TMap<int, FCustomKeyEventWrapper> test;
+	 UPROPERTY(BlueprintReadWrite) TMap<FKey, TObjectPtr<UCustomEventContainer>> keyDownBindings;
+	 UPROPERTY(BlueprintReadWrite) TMap<FKey, TObjectPtr<UCustomEventContainer>> keyUpBindings;
+	 UPROPERTY(BlueprintAssignable) FOnMousePressed mouseDownBindings;
+	 UPROPERTY(BlueprintAssignable) FOnMousePressed mouseUpBindings;
+	 UPROPERTY(BlueprintAssignable) FOnMousePressed mouseDoubleClickBindings;
 
+	 //UFUNCTION(BlueprintCallable) FOnKeyPressed& GetEventFromKey(FKey _key);
+	 UFUNCTION(BlueprintCallable, meta = (AutoCreateRefTerm = "Key")) UCustomEventContainer* GetCustomEventContainerForKeyUp(const FKey& Key);
+	 //UFUNCTION(BlueprintCallable) TObjectPtr<UCustomEventContainer> GetCustomEventContainerForKeyDown(const FKey& _key);
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 	void UpdateCurrentInputType(ECustomInputType _type);
