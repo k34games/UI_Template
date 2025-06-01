@@ -61,6 +61,7 @@ void UCustomInputSubsystem::UpdateCurrentInputType(ECustomInputType _type)
 	{
 		currentInputType = _type;
 		onInputTypeChanged.Broadcast(_type);
+
 	}
 }
 
@@ -72,6 +73,8 @@ void UCustomInputSubsystem::UpdateLastDownPressedKey(FKey _key)
 		if (!_eventContainer)
 			return;
 		_eventContainer->GetOnKeyPressed().Broadcast(_key);
+		UpdateCurrentInputType(_key.IsGamepadKey() ? ECustomInputType::Gamepad : ECustomInputType::MnK);
+
 	}
 }
 
@@ -83,20 +86,27 @@ void UCustomInputSubsystem::UpdateLastUpPressedKey(FKey _key)
 		if (!_eventContainer)
 			return;
 		_eventContainer->GetOnKeyPressed().Broadcast(_key);
+		UpdateCurrentInputType(_key.IsGamepadKey() ? ECustomInputType::Gamepad : ECustomInputType::MnK);
+
 	}
 }
 
 void UCustomInputSubsystem::UpdateMouseDown(const FPointerEvent& _event)
 {
 	mouseDownBindings.Broadcast(_event);
+	UpdateCurrentInputType(ECustomInputType::MnK);
+
 }
 
 void UCustomInputSubsystem::UpdateMouseUp(const FPointerEvent& _event)
 {
 	mouseUpBindings.Broadcast(_event);
+	UpdateCurrentInputType(ECustomInputType::MnK);
+
 }
 
 void UCustomInputSubsystem::UpdateMouseDoubleClick(const FPointerEvent& _event)
 {
 	mouseDoubleClickBindings.Broadcast(_event);
+	UpdateCurrentInputType(ECustomInputType::MnK);
 }
